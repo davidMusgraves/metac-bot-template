@@ -4409,6 +4409,34 @@ snowflake = ["snowflake-connector-python (>=3.3.0) ; python_version < \"3.12\"",
 sql = ["SQLAlchemy (>=2.0.0)"]
 
 [[package]]
+name = "superforecaster"
+version = "0.1.0"
+description = "Multi-source, calibrated probabilistic forecaster (calibrator, scoring, priors, evidence)."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+httpx = ">=0.27"
+numpy = ">=1.26"
+pydantic = ">=2.6"
+pydantic-settings = ">=2.2"
+python-dotenv = ">=1.0"
+
+[package.extras]
+backtest = ["forecasting-tools (>=0.2.90)"]
+dev = ["pytest (>=8.0)"]
+llm = ["anthropic (>=0.39)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/davidMusgraves/Superforecaster.git"
+reference = "main"
+resolved_reference = "d9da76205904e93e114c21ef5fd58c48cbf3e362"
+
+[[package]]
 name = "tenacity"
 version = "9.1.2"
 description = "Retry code until it succeeds"
@@ -4978,4 +5006,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "42234d3c6e0925cbc10be978498a8e4a70e5b12fefbc1c9e65075eef971107a1"
+content-hash = "779a421a6b54f067c49b8475f25487c4f4e5ed179321063f0e9734d533d1dd59"

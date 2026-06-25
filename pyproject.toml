@@ -15,6 +15,10 @@ numpy = "^2.3.0"
 openai = "^2.0.0"
 python-dotenv = "^1.0.1"
 forecasting-tools = "^0.2.90"
+# Superforecaster toolkit (calibrator, scoring, backtest). Git dependency so the
+# CI runner can clone it; for fast local iteration you can temporarily swap to a
+# path dep instead: { path = "../Superforecaster", develop = true }
+superforecaster = { git = "https://github.com/davidMusgraves/Superforecaster.git", branch = "main" }
 
 
 [tool.poetry.group.integrations]
