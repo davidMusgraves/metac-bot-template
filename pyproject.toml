@@ -18,7 +18,7 @@ forecasting-tools = "^0.2.90"
 # Superforecaster toolkit (calibrator, scoring, backtest). Git dependency so the
 # CI runner can clone it; for fast local iteration you can temporarily swap to a
 # path dep instead: { path = "../Superforecaster", develop = true }
-superforecaster = { git = "https://github.com/davidMusgraves/Superforecaster.git", branch = "main" }
+superforecaster = { path = "../Superforecaster", develop = true }
 
 
 [tool.poetry.group.integrations]

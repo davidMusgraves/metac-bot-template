@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+import os
 from datetime import datetime, timezone
 from typing import Literal
 
@@ -128,6 +129,66 @@ class SummerTemplateBot2026(ForecastBot):
     )
     _concurrency_limiter = asyncio.Semaphore(_max_concurrent_questions)
     _structure_output_validation_samples = 2
+
+    ##################################### CALIBRATION (B1) #####################################
+    # Wrap the aggregated *binary* probability through a per-category calibrator
+    # (Superforecaster CalibratorSet) before submit. Loaded once from
+    # CALIBRATOR_PATH if that file exists; otherwise this is a no-op (identity),
+    # so the bot is unaffected until a calibrator has been fit and deployed via
+    # the leave-one-out gate (forecaster.backtest.fit_calibrator). This never
+    # anchors to the community prediction — the calibrator is learned only from
+    # the bot's own resolved track record.
+    _calibrators_loaded = False
+    _calibrators = None
+
+    def _load_calibrators(self):
+        cls = SummerTemplateBot2026
+        if not cls._calibrators_loaded:
+            cls._calibrators_loaded = True
+            path = os.environ.get("CALIBRATOR_PATH", "data/calibrators.json")
+            try:
+                from forecaster.models.calibrator import CalibratorSet
+
+                cls._calibrators = CalibratorSet.load(path)
+                if cls._calibrators is not None:
+                    logger.info(f"Loaded calibrator from {path}")
+                else:
+                    logger.info(
+                        f"No calibrator at {path}; submitting raw probabilities."
+                    )
+            except Exception as e:
+                logger.warning(
+                    f"Calibrator load skipped ({e}); using raw probabilities."
+                )
+                cls._calibrators = None
+        return cls._calibrators
+
+    def _calibration_category(self, question: MetaculusQuestion) -> str:
+        # Per-category keying is a later step (B6); pooled 'global' for now.
+        return "global"
+
+    def _apply_calibration(self, prob: float, question: BinaryQuestion) -> float:
+        calibrators = self._load_calibrators()
+        if calibrators is None:
+            return prob
+        calibrator = calibrators.get(self._calibration_category(question))
+        if calibrator is None:
+            return prob
+        calibrated = max(0.01, min(0.99, calibrator.calibrate(prob)))
+        logger.info(
+            f"Calibration {prob:.3f} -> {calibrated:.3f} for {question.page_url}"
+        )
+        return calibrated
+
+    async def _aggregate_predictions(self, predictions, question):
+        aggregate = await super()._aggregate_predictions(predictions, question)
+        # Only binary aggregates are plain floats we calibrate; multiple-choice
+        # and numeric aggregates pass through untouched.
+        if isinstance(question, BinaryQuestion) and isinstance(
+            aggregate, (int, float)
+        ):
+            aggregate = self._apply_calibration(float(aggregate), question)
+        return aggregate
 
     ##################################### RESEARCH #####################################
 
