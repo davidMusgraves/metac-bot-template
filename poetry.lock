@@ -4416,7 +4416,7 @@ optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 httpx = ">=0.27"
@@ -4431,10 +4431,8 @@ dev = ["pytest (>=8.0)"]
 llm = ["anthropic (>=0.39)"]
 
 [package.source]
-type = "git"
-url = "https://github.com/davidMusgraves/Superforecaster.git"
-reference = "main"
-resolved_reference = "d9da76205904e93e114c21ef5fd58c48cbf3e362"
+type = "directory"
+url = "../Superforecaster"
 
 [[package]]
 name = "tenacity"
@@ -5006,4 +5004,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "779a421a6b54f067c49b8475f25487c4f4e5ed179321063f0e9734d533d1dd59"
+content-hash = "cf7e1b9af216e482ec84ed1d7556e4aec4065c73c817242208f39ad790b10740"
