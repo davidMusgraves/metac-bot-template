@@ -15,10 +15,12 @@ numpy = "^2.3.0"
 openai = "^2.0.0"
 python-dotenv = "^1.0.1"
 forecasting-tools = "^0.2.90"
-# Superforecaster toolkit (calibrator, scoring, backtest). Git dependency so the
-# CI runner can clone it; for fast local iteration you can temporarily swap to a
-# path dep instead: { path = "../Superforecaster", develop = true }
-superforecaster = { path = "../Superforecaster", develop = true }
+# Superforecaster toolkit (calibrator, scoring, backtest). MUST stay a git
+# dependency: CI runners only check out this repo, so a { path = "../Superforecaster" }
+# dep breaks `poetry install` in Actions. For fast local iteration, keep this git
+# line committed and overlay a live copy in your venv instead:
+#     poetry run pip install -e ../Superforecaster
+superforecaster = { git = "https://github.com/davidMusgraves/Superforecaster.git", branch = "main" }
 
 
 [tool.poetry.group.integrations]
